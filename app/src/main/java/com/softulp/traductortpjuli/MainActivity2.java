@@ -9,23 +9,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
 
 import com.softulp.traductortpjuli.databinding.ActivityMain2Binding;
 
 public class MainActivity2 extends AppCompatActivity {
      private ActivityMain2Binding binding;
+     private MainActivity2ViewModel mv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=ActivityMain2Binding.inflate(getLayoutInflater());
+        mv = new MainActivity2ViewModel(getApplication());
         setContentView(binding.getRoot());
-        inicializarVista();
+        mv.getMutableObjeto().observe(this, new Observer<EspanolInglesImg>() {
+            @Override
+            public void onChanged(EspanolInglesImg espanolInglesImg) {
+
+                binding.tvOutput.setText(espanolInglesImg.getIngles());
+                binding.ivObjeto.setImageResource(espanolInglesImg.getImg());
+            }
+        });
+        mv.recibirData(getIntent());
     }
 
-    private void inicializarVista(){
-        Intent intent=getIntent();
-        EspanolInglesImg objeto= (EspanolInglesImg) intent.getSerializableExtra("objeto");
-        binding.tvOutput.setText(objeto.getIngles());
-        binding.ivObjeto.setImageResource(objeto.getImg());
-    }
+
 }
